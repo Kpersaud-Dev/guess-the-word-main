@@ -49,6 +49,8 @@ const validateInput = input => {
   }
 }
 
+// Add Guessed Letter to Array
+
 const makeGuess = letter => {
   // Convert letter to uppercase
   letter = letter.toUpperCase();
@@ -59,9 +61,50 @@ const makeGuess = letter => {
   } else {
     guessedLetters.push(letter);
     console.log(guessedLetters);
+
+    updateWord();
+    replaceCircles(guessedLetters);
   }
 }
 
+//Show Guessed letters
+
+const updateWord = () => {
+  //Empty InnerHTML of ul
+  guessedLettersList.innerHTML = "";
+  // Create list item for each letter in guessedLetters array
+  for (let letter of guessedLetters) {
+    const li = document.createElement('li');
+    li.innerText = letter;
+    guessedLettersList.append(li);
+  }
+}
+
+const replaceCircles = guessedLetters => {
+  const wordUpper = word.toUpperCase();
+  const wordArray = wordUpper.split("");
+  const updatedWordArray = [];
+
+  // Check if wordArray contains letters from guessedLetters
+
+  for (let letter of wordArray) {
+    if(guessedLetters.includes(letter)) {
+      updatedWordArray.push(letter.toUpperCase());
+    } else {
+      updatedWordArray.push("●");
+    }
+  }
+
+  wordInProgress.innerText = updatedWordArray.join("");
+  checkIfWon();
+}
+
+const checkIfWon = () => {
+  if(wordInProgress.innerText == word.toUpperCase()) {
+    messageParagraph.classList.add('win');
+    messageParagraph.innerHTML = '<p class="highlight">You guessed the correct word! Congrats!</p>';
+  }
+}
 
 // Event Listener
 

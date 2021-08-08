@@ -18,10 +18,11 @@ const guessedLettersList = document.querySelector('.guessed-letters'),
 let remainingGuesses = 8;
 
 // Placeholder Word
-let word = "alligator";
+let word = "";
 
-const guessedLetters = [];
+let guessedLetters = [];
 
+// Pull Random Word from API
 const getWord = async function() {
   const res = await fetch(
     "https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt"
@@ -109,6 +110,7 @@ const countGuesses = guess => {
 
   if (remainingGuesses === 0) {
     remaining.innerText = 'GAME OVER';
+    startOver();
   } else if(remainingGuesses === 1) {
     remaining.innerHTML = '<span>You have one guess remaining.</span>';
   } else {
@@ -117,7 +119,7 @@ const countGuesses = guess => {
 }
 
 
-
+// Replace Circles with Correct Guessed Letters
 const replaceCircles = guessedLetters => {
   const wordUpper = word.toUpperCase();
   const wordArray = wordUpper.split("");
@@ -142,7 +144,8 @@ const checkIfWon = () => {
   if(wordInProgress.innerText == word.toUpperCase()) {
     messageParagraph.classList.add('win');
     messageParagraph.innerHTML = '<p class="highlight">You guessed the correct word! Congrats!</p>';
-  }
+    startOver();
+  } 
 }
 
 // Event Listener
@@ -168,4 +171,31 @@ guessButton.addEventListener("click", e => {
   
 })
 
+// Play Again Event Listener
+
+playAgainButton.addEventListener('click', () => {
+  messageParagraph.classList.remove('win');
+  wordInProgress.innerText = "";
+  guessedLettersList.innerText = "";
+  remainingGuesses = 8;
+  guessedLetters = [];
+  remaining.innerHTML = `<span>You have ${remainingGuesses} remaining.`;
+
+  // Show Original State
+  guessButton.classList.remove('hide');
+  remaining.classList.remove('hide');
+  guessedLettersList.classList.remove('hide');
+  playAgainButton.classList.add('hide');
+  getWord();
+})
+
 getWord();
+
+
+// Show Play Again Button
+const startOver = () => {
+  guessButton.classList.add('hide');
+  remaining.classList.add('hide');
+  guessedLettersList.classList.add('hide');
+  playAgainButton.classList.remove('hide');
+}
